@@ -6,17 +6,18 @@ import { colors } from '@/styles/colors';
 
 interface Props extends SickResBody {
   searchWord: string;
+  isFocus?: boolean;
 }
 
 export const RecommendItem: React.FC<Props> = (props) => {
-  const { sickCd, sickNm, searchWord } = props;
+  const { sickCd, sickNm, searchWord, isFocus } = props;
 
   const regex = new RegExp(`(${searchWord})`, 'gi');
 
   const matchText = sickNm.split(regex);
 
   return (
-    <Recommend key={`Recommend${sickCd}`}>
+    <Recommend isFocus={isFocus} key={`Recommend${sickCd}`}>
       {matchText.map((text) =>
         text.toLowerCase() === searchWord.toLowerCase() ? <BoldWordWrap key={sickCd}>{text}</BoldWordWrap> : text
       )}
@@ -24,8 +25,8 @@ export const RecommendItem: React.FC<Props> = (props) => {
   );
 };
 
-const Recommend = styled.li`
-  background-color: transparent;
+const Recommend = styled.li<{ isFocus?: boolean }>`
+  background-color: ${(props) => (props.isFocus ? '#edf5f5' : '#fff')};
   font-size: 16px;
   padding: 8px 0;
 

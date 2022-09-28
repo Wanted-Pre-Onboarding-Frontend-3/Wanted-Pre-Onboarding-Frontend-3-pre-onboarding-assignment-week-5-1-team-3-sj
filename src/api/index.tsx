@@ -13,6 +13,7 @@ interface GetManySickQuery {
 export const getManySick = {
   url: '/sick',
   async request(query: GetManySickQuery, config?: AxiosRequestConfig): Promise<SickResBody[]> {
+    console.log('call api');
     return axiosInstance.get(this.url, {
       params: query,
       ...config,

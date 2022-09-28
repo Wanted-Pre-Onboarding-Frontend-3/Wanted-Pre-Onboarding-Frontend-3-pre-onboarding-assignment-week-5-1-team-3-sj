@@ -8,18 +8,20 @@ import { colors } from '@/styles/colors';
 interface Props {
   recommend: SickResBody[];
   searchWord: string;
+  index: number;
 }
 
 export const RecommendList: React.FC<Props> = (props) => {
-  const { recommend, searchWord } = props;
+  const { recommend, searchWord, index } = props;
   return (
     <List>
       <ListTitle>추천 검색어</ListTitle>
       {recommend &&
         recommend.length > 0 &&
-        recommend.map((item) => {
+        recommend.map((item, idx) => {
           return (
             <RecommendItem
+              isFocus={index === idx}
               key={`Item${item.sickCd}`}
               sickCd={item.sickCd}
               sickNm={item.sickNm}

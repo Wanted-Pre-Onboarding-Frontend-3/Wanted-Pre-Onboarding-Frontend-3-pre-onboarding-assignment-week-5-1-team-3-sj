@@ -12,6 +12,7 @@ interface Props {}
 
 export const Home: React.FC<Props> = () => {
   const [sick, setSick] = useState<SickResBody[]>([]);
+  const [query, setQuery] = useState<any>('');
   const [searchWord, setSearchWord] = useState<string>('');
 
   const onChangeInputs = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,16 +39,62 @@ export const Home: React.FC<Props> = () => {
 
   const debouncedValue = useDebounce(onChangeInputs, 800);
 
+  const ArrowDown = 'ArrowDown';
+  const ArrowUp = 'ArrowUp';
+  const Escape = 'Escape';
+  const Enter = 'Enter';
+
+  const [index, setIndex] = useState<number>(-1);
+  const [isComposing, setIsComposing] = useState<boolean>(false);
+
+  const handleKeyArrow = (e: React.KeyboardEvent) => {
+    if (isComposing) {
+      return;
+    }
+
+    if (sick.length > 0) {
+      switch (e.key) {
+        case ArrowDown:
+          setIndex(index + 1);
+
+          if (sick.length === index + 1) {
+            setIndex(0);
+          }
+          break;
+        case ArrowUp:
+          setIndex(index - 1);
+
+          if (index <= 0) {
+            setIndex(sick.length - 1);
+          }
+          break;
+
+        case Escape:
+          setIndex(-1);
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
   return (
     <DivWrap>
       <InputContainer>
         <InputWrap>
           <Search />
-          <InputBaseWrap onChange={debouncedValue} placeholder="" inputProps={{ 'aria-label': 'search' }} />
+          <InputBaseWrap
+            onKeyDownCapture={handleKeyArrow}
+            onCompositionStart={() => setIsComposing(true)}
+            onCompositionEnd={() => setIsComposing(false)}
+            onChange={debouncedValue}
+            placeholder=""
+            inputProps={{ 'aria-label': 'search' }}
+          />
         </InputWrap>
         <ButtonWrap aria-label="search">검색</ButtonWrap>
       </InputContainer>
-      {sick.length > 0 && <RecommendList recommend={sick} searchWord={searchWord} />}
+      {sick.length > 0 && <RecommendList index={index} recommend={sick} searchWord={searchWord} />}
     </DivWrap>
   );
 };
